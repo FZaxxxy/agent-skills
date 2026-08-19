@@ -1,0 +1,9 @@
+# QQ 解密数据库与密钥缓存（隐私敏感，禁止上传）
+.opencode/skills/qq-summary/scripts/output/
+.opencode/skills/qq-summary/scripts/key_cache.json
+.opencode/skills/qq-summary/scripts/messages_*.txt
+.opencode/skills/qq-summary/scripts/__pycache__/
+
+# Python
+__pycache__/
+*.pyc
