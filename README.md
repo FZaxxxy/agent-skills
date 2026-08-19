@@ -1,6 +1,6 @@
-# opencode-skills
+# agentcode-skills
 
-本地 opencode 自定义技能集合。
+本地 agentcode 自定义技能集合,以opencode为例。
 
 ## 技能列表
 
