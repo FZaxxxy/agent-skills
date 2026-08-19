@@ -1,6 +1,6 @@
 ---
 name: qq-summary
-description: Use when the user asks to summarize QQ messages for today (总结QQ今日消息、QQ群聊总结、查看今日QQ消息、QQ日报), or to check messages from a specific QQ group/chat (兰妈学子散作满天星等). Automatically extracts the QQNT SQLCipher key from the running QQ process, decrypts the local databases, reads today's messages, and produces a importance-ranked summary with highlights.
+description: Use when the user asks to summarize QQ messages for today (总结QQ今日消息、QQ群聊总结、查看今日QQ消息、QQ日报), or to check messages from a specific QQ group/chat (可按群名或备注名筛选). Automatically extracts the QQNT SQLCipher key from the running QQ process, decrypts the local databases, reads today's messages, and produces a importance-ranked summary with highlights.
 ---
 
 # QQ 今日消息总结
@@ -37,8 +37,8 @@ python qq_summary.py --qq <QQ号>
 # 之后（有密钥缓存，免管理员权限，快速重解密）
 python qq_summary.py --qq <QQ号>
 
-# 只总结指定群
-python qq_summary.py --qq <QQ号> --group 兰妈
+# 只总结指定群（按群名或备注名关键词）
+python qq_summary.py --qq <QQ号> --group 群名关键词
 
 # 总结历史某天
 python qq_summary.py --qq <QQ号> --date 2026-08-18
@@ -82,8 +82,8 @@ python "scripts\extract_messages.py"
 
 **若某群查询报 `database disk image is malformed`**：
 - 原因：nt_msg.db 个别页损坏，`ORDER BY` 触发坏索引
-- 解决：用 `rowid` 先取目标范围，再逐行 `WHERE rowid=?` 读取（参考 `extract_lanma.py` 思路）
-- 群备注名匹配：目标群可能显示为备注名，用 `group_info.db` 的 `group_list` 表 `60026`（群备注）字段匹配（如"兰妈学子散作满天星"= 群993401337）
+- 解决：用 `rowid` 先取目标范围，再逐行 `WHERE rowid=?` 读取（容错思路：先 `SELECT rowid FROM ...` 再按 rowid 取每行）
+- 群备注名匹配：目标群可能显示为备注名，用 `group_info.db` 的 `group_list` 表 `60026`（群备注）字段匹配（用户常以备注名指代某个群）
 
 ## 步骤 3：重要性排序与高亮
 
@@ -124,9 +124,7 @@ python "scripts\extract_messages.py"
 
 ## 群名备注说明
 
-QQNT 支持给群设置备注名，`group_list` 表 `60026` 存备注。用户常以备注名指代群：
-- 例：群 993401337 `60007`=萃英山纯良v友会，`60026`=兰妈学子散作满天星
-- 匹配目标群时**同时搜 `60007` 和 `60026`**
+QQNT 支持给群设置备注名，`group_list` 表 `60026` 存备注。用户常以备注名指代群（如某群 `60007`=群名、`60026`=自定义备注名）。匹配目标群时**同时搜 `60007` 和 `60026`**，且不要把具体群名写入公开文档。
 
 ## 关键字段速查
 
